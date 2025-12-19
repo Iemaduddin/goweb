@@ -6,20 +6,28 @@ import (
 
 	"github.com/Iemaduddin/goweb/backend-go/internal/config"
 	"github.com/Iemaduddin/goweb/backend-go/internal/database"
+	"github.com/Iemaduddin/goweb/backend-go/internal/handler"
+	"github.com/Iemaduddin/goweb/backend-go/internal/repository"
 	"github.com/Iemaduddin/goweb/backend-go/internal/router"
+	"github.com/Iemaduddin/goweb/backend-go/internal/service"
 )
 
 func main() {
-	r := router.NewRouter()
 	cfg := config.Load()
 	db, err := database.MySQLDB(cfg)
-
 	if err != nil {
 		log.Fatal("Terjadi kesalahan: ", err)
 	}
 	defer db.Close()
 
-	log.Println("Server is running on port :8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	assetRepo := repository.NewAssetRepository(db)
+	loanRepo := repository.NewAssetLoanRepository(db)
 
+	loanService := service.NewAssetLoanService(loanRepo, assetRepo)
+	loanHandler := handler.NewAssetLoanHandler(loanService)
+
+	router := router.NewRouter(loanHandler)
+
+	log.Println("server running on :8080")
+	http.ListenAndServe(":8080", router)
 }
