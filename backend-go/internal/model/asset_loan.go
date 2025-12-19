@@ -13,6 +13,7 @@ type AssetLoan struct {
 	Status string `json:"status"`
 	Notes  string `json:"notes"`
 
-	ApprovedBy *int64    `json:"approved_by,omitempty"`
-	CreatedAt  time.Time `json:"created_at"`
+	ApprovedBy *int64     `json:"approved_by,omitempty"`
+	ApprovedAt *time.Time `json:"approved_at,omitempty"`
+	CreatedAt  time.Time  `json:"created_at"`
 }
